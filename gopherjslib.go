@@ -42,14 +42,15 @@ package gopherjslib
 
 import (
 	"bytes"
-	"github.com/gopherjs/gopherjs/build"
-	"github.com/gopherjs/gopherjs/compiler"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/gopherjs/gopherjs/build"
+	"github.com/gopherjs/gopherjs/compiler"
 )
 
 // Options is the subset of build.Options, that is exposed to the user of jslib
@@ -198,10 +199,10 @@ func (b *builder) Build() error {
 		return ErrorCompiling(err.Error())
 	}
 
-	deps, err := s.ImportDependencies(archive)
+	deps, err := compiler.ImportDependencies(archive, s.ImportContext.Import)
 	if err != nil {
 		return ErrorImportingDependencies(err.Error())
 	}
 
-	return compiler.WriteProgramCode(deps, s.ImportContext, &compiler.SourceMapFilter{Writer: b.target})
+	return compiler.WriteProgramCode(deps, &compiler.SourceMapFilter{Writer: b.target})
 }
